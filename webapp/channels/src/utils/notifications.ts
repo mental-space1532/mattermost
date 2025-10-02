@@ -21,6 +21,9 @@ let requestedNotificationPermission = Boolean('Notification' in window && Notifi
 // notification. If no error occurred but the user did not grant permission to show notifications, it
 // resolves with a no-op callback. Not all platforms support all features, and may
 // choose different semantics for the notifications.
+//
+// The icon parameter is optional. If not provided, the default Mattermost icon will be used.
+// If provided, it should be a URL to an image. Pass an empty string to hide the icon.
 
 export interface ShowNotificationParams {
     title: string;

@@ -144,6 +144,9 @@ export function sendDesktopNotification(post: Post, msgProps: NewPostMessageProp
         const url = isCrtReply ? getPermalinkURL(updatedState, teamId, post.id) : getChannelURL(updatedState, channel, teamId);
 
         // Get custom brand icon if enabled
+        // When EnableCustomBrand is true, notifications will use the custom brand image
+        // instead of the default Mattermost logo. This allows organizations to customize
+        // the notification icon to match their branding.
         const config = getConfig(updatedState);
         let notificationIcon: string | undefined;
         if (config.EnableCustomBrand === 'true') {
