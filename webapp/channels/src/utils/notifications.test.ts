@@ -100,6 +100,49 @@ describe('Notifications.showNotification', () => {
         });
     });
 
+    it('should use custom icon when provided', async () => {
+        window.Notification.permission = 'granted';
+        window.Notification.requestPermission.mockResolvedValue('granted');
+
+        const n = {};
+        window.Notification.mockReturnValueOnce(n);
+
+        const customIconUrl = 'https://example.com/custom-icon.png';
+        await expect(store.dispatch(Notifications.showNotification({
+            body: 'body',
+            requireInteraction: false,
+            silent: false,
+            title: 'title',
+            icon: customIconUrl,
+        }))).resolves.toMatchObject({
+            status: 'success',
+        });
+        expect(window.Notification.mock.calls.length).toBe(1);
+        const call = window.Notification.mock.calls[0];
+        expect(call[1].icon).toBe(customIconUrl);
+    });
+
+    it('should hide icon when empty string is provided', async () => {
+        window.Notification.permission = 'granted';
+        window.Notification.requestPermission.mockResolvedValue('granted');
+
+        const n = {};
+        window.Notification.mockReturnValueOnce(n);
+
+        await expect(store.dispatch(Notifications.showNotification({
+            body: 'body',
+            requireInteraction: false,
+            silent: false,
+            title: 'title',
+            icon: '',
+        }))).resolves.toMatchObject({
+            status: 'success',
+        });
+        expect(window.Notification.mock.calls.length).toBe(1);
+        const call = window.Notification.mock.calls[0];
+        expect(call[1].icon).toBe('');
+    });
+
     it('should request permissions, callback style, if not previously requested and show notification when permission is granted', async () => {
         window.Notification.requestPermission = (callback: NotificationPermissionCallback) => {
             if (callback) {
