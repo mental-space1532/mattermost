@@ -1405,7 +1405,6 @@ describe('components/suggestion/at_mention_provider/AtMentionProvider', () => {
 
     it('should suggest for full-width "＠"', async () => {
         const pretext = '＠';
-        const matchedPretext = '＠';
         const itemsCall3 = [
             membersGroup([
                 userid10,
