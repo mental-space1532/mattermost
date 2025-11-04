@@ -1,9 +1,10 @@
 // Copyright (c) 2015-present Mattermost, Inc. All Rights Reserved.
 // See LICENSE.txt for license information.
 
-import icon50 from 'images/icon50x50.png';
-import iconWS from 'images/icon_WS.png';
-import * as UserAgent from 'utils/user_agent';
+// Commented out imports - icon is hidden from PC push notifications
+// import icon50 from 'images/icon50x50.png';
+// import iconWS from 'images/icon_WS.png';
+// import * as UserAgent from 'utils/user_agent';
 
 import type {ThunkActionFunc} from 'types/store';
 
@@ -45,10 +46,11 @@ export function showNotification(
     },
 ): ThunkActionFunc<Promise<NotificationResult & {callback: () => void}>> {
     return async () => {
-        let icon = icon50;
-        if (UserAgent.isEdge()) {
-            icon = iconWS;
-        }
+        // Icon is commented out to hide the Mattermost logo from PC push notifications
+        // let icon = icon50;
+        // if (UserAgent.isEdge()) {
+        //     icon = iconWS;
+        // }
 
         if (!isNotificationAPISupported()) {
             throw new Error('Notification API is not supported');
@@ -79,7 +81,8 @@ export function showNotification(
         const notification = new Notification(title, {
             body,
             tag: body,
-            icon,
+            // icon is commented out to hide the Mattermost logo from PC push notifications
+            // icon,
             requireInteraction,
             silent,
         });

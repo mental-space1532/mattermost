@@ -94,7 +94,7 @@ describe('Notifications.showNotification', () => {
         expect(call[1]).toEqual({
             body: 'body',
             tag: 'body',
-            icon: '',
+            // icon is not provided to hide the Mattermost logo from PC push notifications
             requireInteraction: true,
             silent: false,
         });
@@ -120,7 +120,7 @@ describe('Notifications.showNotification', () => {
         expect(call[1]).toEqual({
             body: 'body',
             tag: 'body',
-            icon: '',
+            // icon is not provided to hide the Mattermost logo from PC push notifications
             requireInteraction: true,
             silent: false,
         });
