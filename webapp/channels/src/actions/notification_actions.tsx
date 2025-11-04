@@ -143,6 +143,16 @@ export function sendDesktopNotification(post: Post, msgProps: NewPostMessageProp
         const updatedState = getState();
         const url = isCrtReply ? getPermalinkURL(updatedState, teamId, post.id) : getChannelURL(updatedState, channel, teamId);
 
+        // Get custom brand icon if enabled
+        // When EnableCustomBrand is true, notifications will use the custom brand image
+        // instead of the default Mattermost logo. This allows organizations to customize
+        // the notification icon to match their branding.
+        const config = getConfig(updatedState);
+        let notificationIcon: string | undefined;
+        if (config.EnableCustomBrand === 'true') {
+            notificationIcon = Client4.getBrandImageUrl('0');
+        }
+
         // Allow plugins to change the notification, or re-enable a notification
         const args: NotificationHooksArgs = {title, body, silent: !desktopSoundEnabled, soundName, url, notify: true};
 
@@ -162,7 +172,7 @@ export function sendDesktopNotification(post: Post, msgProps: NewPostMessageProp
             return {data: {status: 'not_sent', reason: 'desktop_notification_hook', data: String(hookResult)}};
         }
 
-        const result = dispatch(notifyMe(argsAfterHooks.title, argsAfterHooks.body, channel.id, teamId, argsAfterHooks.silent, argsAfterHooks.soundName, argsAfterHooks.url));
+        const result = dispatch(notifyMe(argsAfterHooks.title, argsAfterHooks.body, channel.id, teamId, argsAfterHooks.silent, argsAfterHooks.soundName, argsAfterHooks.url, notificationIcon));
 
         //Don't add extra sounds on native desktop clients
         if (desktopSoundEnabled && !isDesktopApp() && !isMobileApp()) {
@@ -412,7 +422,7 @@ function shouldSkipNotification(
     return undefined;
 }
 
-export function notifyMe(title: string, body: string, channelId: string, teamId: string, silent: boolean, soundName: string, url: string): ActionFuncAsync<NotificationResult> {
+export function notifyMe(title: string, body: string, channelId: string, teamId: string, silent: boolean, soundName: string, url: string, icon?: string): ActionFuncAsync<NotificationResult> {
     return async (dispatch) => {
         // handle notifications in desktop app
         if (isDesktopApp()) {
@@ -426,6 +436,7 @@ export function notifyMe(title: string, body: string, channelId: string, teamId:
                 body,
                 requireInteraction: false,
                 silent,
+                icon,
                 onClick: () => {
                     window.focus();
                     getHistory().push(url);
